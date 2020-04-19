@@ -1,5 +1,6 @@
-//Arduino Nano Every i2c_master example (version: 2020-04-15)
+//Arduino Nano Every i2c_master example (version: 2020-04-19)
 //I/O expander PCAL6524 I2c_slave testing
+//function _01 done, but need find better timeout solution
 
 #include <Wire.h>
 
@@ -37,19 +38,24 @@ void setup() {
 
 void loop() {
 
-for(int i =0; i<3; i++)     //init parallel sequence of ports from portArray
+for(int i =0; i<3; i++)       //init parallel sequence of ports from portArray
 {  
   for(int j =0; j<8; j++)     //init parallel sequence of patterns from datArray
   {  
   Wire.beginTransmission(portArray[i]);  
   Wire.write(datArray[j]);
   Wire.endTransmission();
+  
   Serial.print("Port: ");
   Serial.print(i);
   Serial.print("  Pattern: ");
   Serial.println(j);
   delay(3000);
+  
+  Wire.beginTransmission(portArray[i]);  
+  Wire.write(0x00);           // reset to hex(0x00)  
+  Wire.endTransmission();
+  delay(60000);
   }
-} 
- //delay(60000);   //delay 60sec. need to change to interrupt "millis"
+ } 
 }
